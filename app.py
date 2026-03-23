@@ -1,9 +1,10 @@
 import streamlit as st
+import random
 
 # Заглавие
 st.title("Галерия от любими животни")
 
-# Инициализация на животните (примерни)
+# Инициализация
 if "animals" not in st.session_state:
     st.session_state.animals = [
         {"name": "Крава", "image": "https://via.placeholder.com/300?text=Крава", "description": "Млечна крава, дава много мляко."},
@@ -31,6 +32,33 @@ if st.session_state.animals:
     if st.button("Премахни"):
         st.session_state.animals = [a for a in st.session_state.animals if a["name"] != remove_name]
         st.success(f"{remove_name} е премахнато!")
+
+# --- Интересни допълнения ---
+if st.session_state.animals:
+    st.header("Интерактивни функции")
+
+    # Брояч
+    st.write(f"Общо животни в галерията: {len(st.session_state.animals)}")
+
+    # Случайно животно
+    if st.button("Покажи случайно животно"):
+        animal = random.choice(st.session_state.animals)
+        st.subheader(animal["name"])
+        st.image(animal["image"], use_column_width=True)
+        st.write(animal["description"])
+
+    # Филтър по име
+    search_name = st.text_input("Търсене по име на животно")
+    if search_name:
+        filtered = [a for a in st.session_state.animals if search_name.lower() in a["name"].lower()]
+        if filtered:
+            st.write(f"Намерени животни: {len(filtered)}")
+            for animal in filtered:
+                st.subheader(animal["name"])
+                st.image(animal["image"], use_column_width=True)
+                st.write(animal["description"])
+        else:
+            st.info("Няма животни с това име.")
 
 # --- Визуализация на галерията ---
 st.header("Галерия")
